@@ -3,13 +3,26 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts"
+    "build": "npm run build:web && tsc",
+    "build:web": "vite build --config web/vite.config.ts",
+    "start": "node dist/server.js",
+    "dev:api": "ts-node src/server.ts",
+    "dev:web": "vite --config web/vite.config.ts",
+    "dev": "concurrently -k \"npm run dev:api\" \"npm run dev:web\""
+  },
+  "dependencies": {
+    "lightweight-charts": "4.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.21",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "@vitejs/plugin-react": "^4.4.1",
+    "concurrently": "^9.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
   }
 }
