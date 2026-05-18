@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { StockChart, type ChartStatus } from "./StockChart";
+import { TradePanel } from "./TradePanel";
 import { DEFAULT_STOCK, STOCKS } from "./stocks";
+import { useTrades } from "./useTrades";
 
 export function App() {
   const [symbol, setSymbol] = useState(DEFAULT_STOCK.symbol);
@@ -8,6 +10,9 @@ export function App() {
     text: "불러오는 중…",
     error: false,
   });
+  const [candleDates, setCandleDates] = useState<string[]>([]);
+
+  const { trades, addTrade, updateTrade, removeTrade } = useTrades(symbol);
 
   const active = useMemo(
     () => STOCKS.find((s) => s.symbol === symbol) ?? DEFAULT_STOCK,
@@ -18,6 +23,10 @@ export function App() {
     setStatus(s);
   }, []);
 
+  const onCandleDates = useCallback((dates: string[]) => {
+    setCandleDates(dates);
+  }, []);
+
   return (
     <div className="layout">
       <header>
@@ -25,7 +34,7 @@ export function App() {
           <h1>
             {active.name} ({active.code})
           </h1>
-          <span className="meta">Yahoo Finance · 일봉 · 최근 약 2년</span>
+          <span className="meta">Yahoo Finance · 일봉 · 최근 100거래일</span>
           <span className={`status ${status.error ? "error" : ""}`}>
             {status.text}
           </span>
@@ -48,9 +57,23 @@ export function App() {
           })}
         </nav>
       </header>
-      <main className="app-main">
-        <StockChart symbol={symbol} onStatusChange={onStatusChange} />
-      </main>
+      <div className="workspace">
+        <TradePanel
+          trades={trades}
+          candleDates={candleDates}
+          onAdd={addTrade}
+          onUpdate={updateTrade}
+          onRemove={removeTrade}
+        />
+        <main className="app-main">
+          <StockChart
+            symbol={symbol}
+            trades={trades}
+            onStatusChange={onStatusChange}
+            onCandleDates={onCandleDates}
+          />
+        </main>
+      </div>
     </div>
   );
 }

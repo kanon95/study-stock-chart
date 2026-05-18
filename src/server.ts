@@ -12,6 +12,9 @@ const ALLOWED_SYMBOLS = new Set([
   "005380.KS",
 ]);
 
+/** 일봉 기본 표시 개수 */
+const DEFAULT_CANDLE_COUNT = 100;
+
 type YahooChartResponse = {
   chart?: {
     result?: Array<{
@@ -50,7 +53,10 @@ async function fetchDailyCandles(yahooSymbol: string): Promise<Candle[]> {
     `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}`,
   );
   url.searchParams.set("interval", "1d");
-  url.searchParams.set("range", "2y");
+  const period2 = Math.floor(Date.now() / 1000);
+  const period1 = period2 - 160 * 24 * 60 * 60;
+  url.searchParams.set("period1", String(period1));
+  url.searchParams.set("period2", String(period2));
 
   const res = await fetch(url, {
     headers: {
@@ -104,14 +110,17 @@ async function fetchDailyCandles(yahooSymbol: string): Promise<Candle[]> {
     });
   }
 
-  return candles;
+  if (candles.length <= DEFAULT_CANDLE_COUNT) {
+    return candles;
+  }
+  return candles.slice(-DEFAULT_CANDLE_COUNT);
 }
 
 function json(res: http.ServerResponse, status: number, data: unknown): void {
   const body = JSON.stringify(data);
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": "public, max-age=60",
+    "Cache-Control": "no-store",
   });
   res.end(body);
 }

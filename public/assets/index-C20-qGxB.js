@@ -1,5 +1,5 @@
 (function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const h of document.querySelectorAll('link[rel="modulepreload"]'))a(h);new MutationObserver(h=>{for(const o of h)if(o.type==="childList")for(const f of o.addedNodes)f.tagName==="LINK"&&f.rel==="modulepreload"&&a(f)}).observe(document,{childList:!0,subtree:!0});function n(h){const o={};return h.integrity&&(o.integrity=h.integrity),h.referrerPolicy&&(o.referrerPolicy=h.referrerPolicy),h.crossOrigin==="use-credentials"?o.credentials="include":h.crossOrigin==="anonymous"?o.credentials="omit":o.credentials="same-origin",o}function a(h){if(h.ep)return;h.ep=!0;const o=n(h);fetch(h.href,o)}})();var hc={exports:{}},Jn={};/**
- * @license React
+ * @license Reactf
  * react-jsx-runtime.production.js
  *
  * Copyright (c) Meta Platforms, Inc. and affiliates.
